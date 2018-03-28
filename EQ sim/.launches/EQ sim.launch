@@ -5,7 +5,7 @@
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROGRAM.C55xx Rev3.0 CPU Functional Simulator_0/TMS320C55x" value="${build_artifact:EQ sim}"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROJECT.C55xx Rev3.0 CPU Functional Simulator_0/TMS320C55x" value="EQ sim"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_TARGET_CONFIG" value="${target_config_active_default:EQ sim}"/>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.C55xx Rev3.0 CPU Functional Simulator_0/TMS320C55x" value="C:/Programming\Code Composer 6.2\workspace_v6_2\DSP2-Projektni-Zadatak-1\EQ sim\Debug\EQ sim.out"/>
+<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.C55xx Rev3.0 CPU Functional Simulator_0/TMS320C55x" value="D:/MiloradMarkovic\DSP2\EQ sim\Debug\EQ sim.out"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/EQ sim"/>
 </listAttribute>
