@@ -100,6 +100,7 @@ void main( void )
 {   
 	int i;
 	int keyOld = -1;
+	char c;
 
 	int k[4] = {32767, 32767, 32767, 32767};
 	int selected = 0;
@@ -158,6 +159,11 @@ void main( void )
 
     Uint16 key;
     clearLCD();
+    printChar('3');
+    printChar('2');
+    printChar('7');
+    printChar('6');
+    printChar('7');
     while(1)
     {
     	aic3204_read_block(sampleBufferL, sampleBufferR);
@@ -169,20 +175,53 @@ void main( void )
 					case SW1:
 						if (keyOld != 1)
 						{
-							printf("\nSW1\n");
 							if (++selected > 3) selected = 0;
 							printf("\nSelected: %d\n", selected);
+							clearLCD();
+
+							if ((int)k[selected]/10000 != 0)
+							{
+								c = (int)(k[selected]/10000) + '0';
+								printChar(c);
+							}
+							c = (int)(k[selected]%10000)/1000 + '0';
+							printChar(c);
+							c = (int)(k[selected]%1000)/100 + '0';
+							printChar(c);
+							c = (int)(k[selected]%100)/10 + '0';
+							printChar(c);
+							c = (int)(k[selected])%10 + '0';
+							printChar(c);
+
+
+							printf("\nk = [%d, %d, %d, %d]\n", k[0], k[1], k[2], k[3]);
 							keyOld = 1;
 						}
 						break;
 					case SW2:
 						if (keyOld != 2)
 						{
-							printf("\nSW2\n");
 							k[selected]-=3277;
 							if(k[selected] < 0) k[selected] = 32767;
 							clearLCD();
+
 							//OVDJE UBACITI ZA PISANJE NA PLOCICU
+							if ((int)k[selected]/10000 != 0)
+							{
+								c = (int)(k[selected]/10000) + '0';
+								printChar(c);
+							}
+							c = (int)(k[selected]%10000)/1000 + '0';
+							printChar(c);
+							c = (int)(k[selected]%1000)/100 + '0';
+							printChar(c);
+							c = (int)(k[selected]%100)/10 + '0';
+							printChar(c);
+							c = (int)(k[selected])%10 + '0';
+							printChar(c);
+
+
+							printf("\nk = [%d, %d, %d, %d]\n", k[0], k[1], k[2], k[3]);
 							keyOld = 2;
 						}
 						break;
@@ -190,9 +229,17 @@ void main( void )
 						keyOld = -1;
 					}
 				//printf("\nk = [%d, %d, %d, %d]\n", k[0], k[1], k[2], k[3]);
-
-
-
+//				printf("\n%d\n", k[selected]);
+//				c = (int)(k[selected]/10000) + '0';
+//				printf("\n\tfirst char:%c", c);
+//				c = (int)(k[selected]%10000)/1000 + '0';
+//				printf("\n\tsecond char:%c", c);
+//				c = (int)(k[selected]%1000)/100 + '0';
+//				printf("\n\tthird char:%c", c);
+//				c = (int)(k[selected]%100)/10 + '0';
+//				printf("\n\tforth char:%c", c);
+//				c = (int)(k[selected])%10 + '0';
+//				printf("\n\tlast char: %c", c);
 
 
 
@@ -241,7 +288,7 @@ void main( void )
     	    	calculateShelvingCoeff(alphaLP, coeffLP);
     	    	for (i = 0; i < AUDIO_IO_SIZE; i ++)
     	    	{
-    	    		EQLP[i] = shelvingLP(dirakSample[i], coeffLP, EQx_historyLP, EQy_historyLP, k[0]);
+    	    		EQLP[i] = shelvingLP(sampleBufferL[i], coeffLP, EQx_historyLP, EQy_historyLP, k[0]);
     	    	}
 
     	    	calculatePeekCoeff(alphaPeek, betaPeek, coeffPeek);
@@ -266,13 +313,9 @@ void main( void )
 
 
 
+//    	    	printf("\n One Sample done \n");
 
-
-
-
-    	    	printf("\n One Sample done \n");
-
-    			aic3204_write_block(sampleBufferL, sampleBufferR);
+    			aic3204_write_block(EQHP, EQHP);
 	}
 
     	
