@@ -18,12 +18,13 @@
 #include "ezdsp5535_sar.h"
 #include "print_number.h"
 #include "math.h"
+#include "string.h"
 
 #include "iir.h"
 #include "processing.h"
 
 /* Frekvencija odabiranja */
-#define SAMPLE_RATE 8000L
+#define SAMPLE_RATE 16000L
 
 #define PI 3.14159265
 
@@ -34,12 +35,21 @@ Int16 sampleBufferL[AUDIO_IO_SIZE];
 Int16 sampleBufferR[AUDIO_IO_SIZE];
 Int16 dirakSample[AUDIO_IO_SIZE];
 
-float alphaLP = 0.8712037;
-float alphaHP = - 0.8540809; //da li on prepoznaje minus?
-float alphaPeek = 0.6969612;
-float betaPeek = 0.860742;
-float alphaPeek2 = 0.5219542;
-float betaPeek2 = - 0.4222229; //da li on prepoznaje minus?
+//za frek odabiranja 8000
+//float alphaLP = 0.8712037;
+//float alphaHP = - 0.8540809; //da li on prepoznaje minus?
+//float alphaPeek = 0.6969612;
+//float betaPeek = 0.860742;
+//float alphaPeek2 = 0.5219542;
+//float betaPeek2 = - 0.4222229; //da li on prepoznaje minus?
+
+//za frek odabiranja 16000
+float alphaLP = 0.9335353;
+float alphaHP = 0.0392900;
+float alphaPeek = 0.8372424;
+float betaPeek = 0.9645574 ;
+float alphaPeek2 = 0.7340693;
+float betaPeek2 = 0.5374835;
 
 //0.1 -> jako siroko
 //0.9 jako usko
@@ -89,6 +99,11 @@ Int16 ShellBufferPeek[AUDIO_IO_SIZE];
 void main( void )
 {   
 	int i;
+	int keyOld = -1;
+
+	int k[4] = {32767, 32767, 32767, 32767};
+	int selected = 0;
+
     /* Inicijalizaija razvojne ploce */
     EZDSP5535_init( );
 
@@ -140,11 +155,48 @@ void main( void )
         	dirakSample[i] = (i == 0? 16000 : 0);
         }
 
+
+    Uint16 key;
+    clearLCD();
     while(1)
     {
     	aic3204_read_block(sampleBufferL, sampleBufferR);
 
-    	    	/* Your code here */
+    			key = EZDSP5535_SAR_getKey();
+
+
+				switch (key) {
+					case SW1:
+						if (keyOld != 1)
+						{
+							printf("\nSW1\n");
+							if (++selected > 3) selected = 0;
+							printf("\nSelected: %d\n", selected);
+							keyOld = 1;
+						}
+						break;
+					case SW2:
+						if (keyOld != 2)
+						{
+							printf("\nSW2\n");
+							k[selected]-=3277;
+							if(k[selected] < 0) k[selected] = 32767;
+							clearLCD();
+							//OVDJE UBACITI ZA PISANJE NA PLOCICU
+							keyOld = 2;
+						}
+						break;
+					default:
+						keyOld = -1;
+					}
+				//printf("\nk = [%d, %d, %d, %d]\n", k[0], k[1], k[2], k[3]);
+
+
+
+
+
+
+    			/* Your code here */
     	    	/* Generisati koeficijente filtara za karakteristiku alpa = 0.3.
     	    	 * Iscrtati prenosnu karakteristiku shelving filtra za K = 8192 (sto odgovara vrednosti 0.25 skaliranoj na opseg int16) i K = 24576
     	    	 * Za potrebe iscrtavanja prenosne karakteristike filtra izracunati impulsni odziv dovodjenjem dirakovog impulsa u trajanju od N odbiraka na ulaz filtra.*/
@@ -189,25 +241,25 @@ void main( void )
     	    	calculateShelvingCoeff(alphaLP, coeffLP);
     	    	for (i = 0; i < AUDIO_IO_SIZE; i ++)
     	    	{
-    	    		EQLP[i] = shelvingLP(dirakSample[i], coeffLP, EQx_historyLP, EQy_historyLP, 8192);
+    	    		EQLP[i] = shelvingLP(dirakSample[i], coeffLP, EQx_historyLP, EQy_historyLP, k[0]);
     	    	}
 
     	    	calculatePeekCoeff(alphaPeek, betaPeek, coeffPeek);
 				for (i = 0; i < AUDIO_IO_SIZE; i ++)
 				{
-					EQPeek[i] = shelvingPeek(EQLP[i], coeffPeek, EQx_historyPeek, EQy_historyPeek, 8192);
+					EQPeek[i] = shelvingPeek(EQLP[i], coeffPeek, EQx_historyPeek, EQy_historyPeek, k[1]);
 				}
 
     	    	calculatePeekCoeff(betaPeek2, betaPeek2, coeffPeek2);
 				for (i = 0; i < AUDIO_IO_SIZE; i ++)
 				{
-					EQPeek2[i] = shelvingPeek(EQPeek[i], coeffPeek2, EQx_historyPeek2, EQy_historyPeek2, 8192);
+					EQPeek2[i] = shelvingPeek(EQPeek[i], coeffPeek2, EQx_historyPeek2, EQy_historyPeek2, k[2]);
 				}
 
     	    	calculateShelvingCoeff(alphaHP, coeffHP);
 				for (i = 0; i < AUDIO_IO_SIZE; i ++)
 				{
-					EQHP[i] = shelvingHP(EQPeek2[i], coeffHP, EQx_historyHP, EQy_historyHP, 8192);
+					EQHP[i] = shelvingHP(EQPeek2[i], coeffHP, EQx_historyHP, EQy_historyHP, k[3]);
 				}
 
 
