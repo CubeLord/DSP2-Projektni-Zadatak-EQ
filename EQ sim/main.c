@@ -35,12 +35,21 @@ Int16 sampleBufferR[AUDIO_IO_SIZE];
 Int16 dirakSample[AUDIO_IO_SIZE];
 
 
-float alphaLP = 0.8712037;
-float alphaHP = - 0.8540809; //da li on prepoznaje minus?
-float alphaPeek = 0.6969612;
-float betaPeek = 0.860742;
-float alphaPeek2 = 0.5219542;
-float betaPeek2 = - 0.4222229; //da li on prepoznaje minus?
+//za frek odabiranja 8000
+//float alphaLP = 0.8712037;
+//float alphaHP = - 0.8540809; //da li on prepoznaje minus?
+//float alphaPeek = 0.6969612;
+//float betaPeek = 0.860742;
+//float alphaPeek2 = 0.5219542;
+//float betaPeek2 = - 0.4222229; //da li on prepoznaje minus?
+
+//za frek odabiranja 16000
+//float alphaLP = 0.9335353;
+//float alphaHP = 0.0392900;
+//float alphaPeek = 0.8372424;
+//float betaPeek = 0.9645574 ;
+//float alphaPeek2 = 0.7340693;
+//float betaPeek2 = 0.5374835;
 
 //0.1 -> jako siroko
 //0.9 jako usko
@@ -54,7 +63,13 @@ float betaPeek2 = - 0.4222229; //da li on prepoznaje minus?
 //float alphaPeek2 = 0.7915;
 //float betaPeek2 = 0.447;
 
-
+//za frek odabiranja 16000 - 39
+float alphaLP =  0.9099300;
+float alphaHP = -0.4142137;
+float alphaPeek = 0.9464799;
+float betaPeek = 0.9815438;
+float alphaPeek2 = 0.4199762;
+float betaPeek2 =   0.2162265;
 
 
 Int16 EQLP[AUDIO_IO_SIZE];
