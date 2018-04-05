@@ -264,7 +264,7 @@ void main( void )
     	    	calculateShelvingCoeff(-0.3, coeffHP);
     	    	for (i = 0; i < AUDIO_IO_SIZE; i++)
 				{
-					ShellBufferHP[i] = shelvingHP(dirakSample[i], coeffHP ,x_historyHP, y_historyHP, 8192);
+					ShellBufferHP[i] = shelvingHP(dirakSample[i], coeffHP ,x_historyHP, y_historyHP, 24576);
 				}
 
 
@@ -288,7 +288,8 @@ void main( void )
     	    	calculateShelvingCoeff(alphaLP, coeffLP);
     	    	for (i = 0; i < AUDIO_IO_SIZE; i ++)
     	    	{
-    	    		EQLP[i] = shelvingLP(sampleBufferL[i], coeffLP, EQx_historyLP, EQy_historyLP, k[0]);
+    	    		//EQLP[i] = shelvingLP(sampleBufferL[i], coeffLP, EQx_historyLP, EQy_historyLP, k[0]);
+    	    		EQLP[i] = shelvingLP(dirakSample[i], coeffLP, EQx_historyLP, EQy_historyLP, k[0]);
     	    	}
 
     	    	calculatePeekCoeff(alphaPeek, betaPeek, coeffPeek);

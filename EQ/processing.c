@@ -30,7 +30,7 @@ Int16 shelvingHP(Int16 input, Int16* coeff, Int16* x_history, Int16* y_history, 
 	Int32 Output;
 
 	Buffer = first_order_IIR(input, coeff, x_history, y_history);
-	Output = ((1/2)*(_smpy(input, k)) + _smpy(Buffer, k)*(1/2)) + (Int32)(input - Buffer)/2;
+	Output = ((1.0f/2)*(_smpy(input, k)) + _smpy(Buffer, k)*(1.0f/2)) + (Int32)(input/2 - Buffer/2);
 	if (Output > 32767)
 	{
 		printf("\n OVER HP\n");
